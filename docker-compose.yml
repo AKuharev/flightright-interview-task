@@ -3,13 +3,29 @@ services:
   db:
     image: postgres
     restart: always
-    environment:
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./scripts/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+
+  backend:
+    image: interview-task:1.0.0
+    restart: on-failure
+    env_file:
+      - .env
+    environment:
+      SPRING_APPLICATION_JSON: '{
+            "spring.datasource.url"  : "jdbc:postgresql://db:5432/$DATABASE_NAME",
+            "spring.datasource.username" : "$DATABASE_USER",
+            "spring.datasource.password" : "$POSTGRES_PASSWORD"
+          }'
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
 
 volumes:
   db-data:
