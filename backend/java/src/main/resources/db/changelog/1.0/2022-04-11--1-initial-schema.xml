@@ -10,7 +10,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -26,15 +26,28 @@
             <column name="phone" type="varchar(24)">
                 <constraints nullable="false"/>
             </column>
-            <column name="source_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-users-sources" author="Andrei Kukharau">
+        <createTable tableName="users_sources">
+            <column name="source_id" type="bigint"/>
+            <column name="user_id" type="bigint"/>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="users"
+        <addForeignKeyConstraint baseTableName="users_sources"
                                  baseColumnNames="source_id"
                                  constraintName="FK_sources_users"
                                  referencedTableName="sources"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint baseTableName="users_sources"
+                                 baseColumnNames="user_id"
+                                 constraintName="FK_users_sources"
+                                 referencedTableName="users"
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"
                                  onUpdate="NO ACTION"/>

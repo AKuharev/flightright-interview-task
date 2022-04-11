@@ -14,8 +14,6 @@ services:
   backend:
     image: interview-task:1.0.0
     restart: on-failure
-    env_file:
-      - .env
     environment:
       SPRING_APPLICATION_JSON: '{
             "spring.datasource.url"  : "jdbc:postgresql://db:5432/$DATABASE_NAME",
@@ -26,6 +24,13 @@ services:
       - "8080:8080"
     depends_on:
       - db
+
+  frontend:
+    build: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
 volumes:
   db-data:
